@@ -27,3 +27,25 @@ print("Total original matches:", len(df))
 
 print("\nTotal grouped home goals:", home_stats["goals_scored"].sum())
 print("Total original home goals:", df["FTHG"].sum())
+
+
+# Calculate away team statistics.
+
+away_stats = df.groupby("AwayTeam").agg(
+    matches_played=("FTAG", "size"),
+    goals_scored=("FTAG", "sum"),
+    goals_conceded=("FTHG", "sum"),
+    average_goals=("FTAG", "mean")
+)
+
+away_stats = away_stats.sort_values(by="goals_scored", ascending=False)
+
+print("\nAWAY STATS")
+print(away_stats)
+
+# Validate away match counts and goal totals.
+print("\nTotal grouped away matches:", away_stats["matches_played"].sum())
+print("Total original matches:", len(df))
+
+print("\nTotal grouped away goals:", away_stats["goals_scored"].sum())
+print("Total original away goals:", df["FTAG"].sum())
