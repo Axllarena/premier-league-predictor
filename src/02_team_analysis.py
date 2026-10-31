@@ -12,25 +12,7 @@ home_stats = df.groupby("HomeTeam").agg(
     average_goals=("FTHG", "mean")
 )
 
-# Rank home teams by total goals scored.
-home_stats = home_stats.sort_values(
-    by="goals_scored",
-    ascending=False
-)
-
-print("Home team statistics:")
-print(home_stats)
-
-# Validate match counts and home goal totals.
-print("\nTotal grouped home matches:", home_stats["matches_played"].sum())
-print("Total original matches:", len(df))
-
-print("\nTotal grouped home goals:", home_stats["goals_scored"].sum())
-print("Total original home goals:", df["FTHG"].sum())
-
-
 # Calculate away team statistics.
-
 away_stats = df.groupby("AwayTeam").agg(
     matches_played=("FTAG", "size"),
     goals_scored=("FTAG", "sum"),
@@ -38,14 +20,46 @@ away_stats = df.groupby("AwayTeam").agg(
     average_goals=("FTAG", "mean")
 )
 
-away_stats = away_stats.sort_values(by="goals_scored", ascending=False)
+# Validate team indexes and check for missing teams.
+print("Home team index is unique:", home_stats.index.is_unique)
+print("Away team index is unique:", away_stats.index.is_unique)
 
-print("\nAWAY STATS")
-print(away_stats)
+missing_home = away_stats.index.difference(home_stats.index)
+missing_away = home_stats.index.difference(away_stats.index)
 
-# Validate away match counts and goal totals.
-print("\nTotal grouped away matches:", away_stats["matches_played"].sum())
-print("Total original matches:", len(df))
+print("Teams missing from home stats:", missing_home)
+print("Teams missing from away stats:", missing_away)
 
-print("\nTotal grouped away goals:", away_stats["goals_scored"].sum())
-print("Total original away goals:", df["FTAG"].sum())
+# Prepare statistics for merging.
+home_table = home_stats.reset_index()
+away_table = away_stats.reset_index()
+
+# Merge home and away statistics by team.
+team_stats = home_table.merge(
+    away_table,
+    left_on="HomeTeam",
+    right_on="AwayTeam",
+    how="inner",
+    suffixes=("_home", "_away"),
+    validate="one_to_one"
+)
+
+# Rank teams by home goals scored.
+team_stats = team_stats.sort_values(
+    by="goals_scored_home",
+    ascending=False
+)
+
+print("\nTeam statistics:")
+print(team_stats)
+
+# Validate match counts and goal totals.
+print("\nTotal teams:", len(team_stats))
+print("Total home matches:", team_stats["matches_played_home"].sum())
+print("Total away matches:", team_stats["matches_played_away"].sum())
+
+print("\nGrouped home goals:", team_stats["goals_scored_home"].sum())
+print("Original home goals:", df["FTHG"].sum())
+
+print("\nGrouped away goals:", team_stats["goals_scored_away"].sum())
+print("Original away goals:", df["FTAG"].sum())
