@@ -1,16 +1,11 @@
-
 import pandas as pd
+from src.team_statistics import calculate_home_stats
 
 # Load historical Premier League match data.
 df = pd.read_csv("data/raw/E0_2526.csv")
 
 # Calculate home team statistics.
-home_stats = df.groupby("HomeTeam").agg(
-    matches_played=("FTHG", "size"),
-    goals_scored=("FTHG", "sum"),
-    goals_conceded=("FTAG", "sum"),
-    average_goals=("FTHG", "mean")
-)
+home_stats = calculate_home_stats(df)
 
 # Calculate away team statistics.
 away_stats = df.groupby("AwayTeam").agg(

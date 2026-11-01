@@ -1,3 +1,5 @@
 .venv/
+.venv_backup/
 __pycache__/
+.pytest_cache/
 .DS_Store
