@@ -1,5 +1,5 @@
 import pandas as pd
-from src.team_statistics import calculate_home_stats
+from src.team_statistics import calculate_home_stats, calculate_away_stats
 
 # Load historical Premier League match data.
 df = pd.read_csv("data/raw/E0_2526.csv")
@@ -8,12 +8,7 @@ df = pd.read_csv("data/raw/E0_2526.csv")
 home_stats = calculate_home_stats(df)
 
 # Calculate away team statistics.
-away_stats = df.groupby("AwayTeam").agg(
-    matches_played=("FTAG", "size"),
-    goals_scored=("FTAG", "sum"),
-    goals_conceded=("FTHG", "sum"),
-    average_goals=("FTAG", "mean")
-)
+away_stats = calculate_away_stats(df)
 
 # Validate team indexes and check for missing teams.
 print("Home team index is unique:", home_stats.index.is_unique)
