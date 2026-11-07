@@ -1,4 +1,8 @@
 def validate_goals(matches):
+    # Check for missing goal values.
+     if matches["FTHG"].isna().any() or matches["FTAG"].isna().any():
+        raise ValueError("Goals cannot be missing.")
+    # Check for negative goal values.
      if (matches["FTHG"] < 0).any() or (matches["FTAG"] < 0).any():
         raise ValueError("Goals cannot be negative.")
 

@@ -106,3 +106,24 @@ def test_away_statistics_negative_goals():
 
     with pytest.raises(ValueError):
         calculate_away_stats(matches)
+
+def test_home_statistics_missing_goals():
+    matches = pd.DataFrame({
+    "HomeTeam": ["Liverpool", "Liverpool"],
+    "FTHG": [2, 3],
+    "FTAG": [1, None]
+    })
+
+    with pytest.raises(ValueError):
+        calculate_home_stats(matches)
+
+def test_away_statistics_missing_goals():
+    matches = pd.DataFrame({
+    "HomeTeam": ["Liverpool", "Arsenal", "Chelsea"],
+    "AwayTeam":["Chelsea", "Manchester City", "Manchester United"],
+    "FTHG": [1, 2, None],
+    "FTAG": [3, 2, 1]
+    })
+
+    with pytest.raises(ValueError):
+        calculate_away_stats(matches)
