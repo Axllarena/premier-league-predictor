@@ -1,9 +1,11 @@
 import pandas as pd
 import pytest
 from src.eda_statistics import calculate_goal_frequency
+from src.eda_statistics import calculate_range_proportion
+
 
 def test_goal_frequency():
-# Arrange: prepare sample goal data.
+    # Arrange: prepare sample goal data.
 
     goals = pd.Series([3, 1, 3, 0, 1, 3])
 
@@ -12,3 +14,73 @@ def test_goal_frequency():
 
 # Assert: verify the expected frequencies.
     assert result.equals(pd.Series(data=[1, 2, 3], index=[0, 1, 3]))
+
+
+def test_range_proportion():
+    # Arrange: prepare sample goal data.
+    goals = pd.Series([0, 2, 3, 4, 5, 2, 1, 3])
+
+    lower_bound = 2
+    upper_bound = 4
+
+    # Act: calculate goals proportion.
+    result = calculate_range_proportion(goals, lower_bound, upper_bound)
+
+    # Assert: verify the expected proportion.
+    assert result == 0.625, "Error: nexpected proportion"
+
+
+def test_range_proportion_equal_bounds():
+
+    goals = pd.Series([0, 1, 0, 3])
+
+    lower_bound = 0
+    upper_bound = 0
+
+    result = calculate_range_proportion(goals, lower_bound, upper_bound)
+
+    assert result == 0.5, "Error: unexpected result"
+
+
+def test_range_proportion_invalid_bounds():
+
+    goals = pd.Series([0, 2, 4, 5])
+
+    lower_bound = 5
+    upper_bound = 2
+
+    with pytest.raises(ValueError):
+        calculate_range_proportion(goals, lower_bound, upper_bound)
+
+
+def test_range_proportion_empty_series():
+
+    goals = pd.Series([], dtype=int)
+
+    lower_bound = 2
+    upper_bound = 4
+
+    with pytest.raises(ValueError):
+        calculate_range_proportion(goals, lower_bound, upper_bound)
+
+
+def test_range_proportion_missing_goals():
+
+    goals = pd.Series([1, 2, None, 4])
+
+    lower_bound = 2
+    upper_bound = 4
+
+    with pytest.raises(ValueError):
+        calculate_range_proportion(goals, lower_bound, upper_bound)
+
+
+def test_range_proportion_no_matches():
+    goals = pd.Series([0, 1, 2, 3, 4])
+
+    lower_bound = 6
+    upper_bound = 8
+
+    result = calculate_range_proportion(goals, lower_bound, upper_bound)
+
+    assert result == 0, "Unexpected error"
