@@ -2,6 +2,7 @@ import pandas as pd
 import pytest
 from src.eda_statistics import calculate_goal_frequency
 from src.eda_statistics import calculate_range_proportion
+from src.eda_statistics import calculate_goal_dispersion
 
 
 def test_goal_frequency():
@@ -84,3 +85,44 @@ def test_range_proportion_no_matches():
     result = calculate_range_proportion(goals, lower_bound, upper_bound)
 
     assert result == 0, "Unexpected error"
+
+def test_goal_dispersion():
+
+    # Arrange: prepare sample goal data.
+    goals = pd.Series([0, 0, 2, 4, 4])
+
+    # Act: calculate dispersion statistics.
+    result = calculate_goal_dispersion(goals)
+
+    # Assert: verify the expected dispersion values.
+    assert result["range"] == 4, "Unexpected range"
+    assert result["variance"] == pytest.approx(3.2)
+    assert result["std_dev"] == pytest.approx(1.7888543819998317)
+
+def test_goal_dispersion_constant_values():
+    # Arrange: prepare constant goal data.
+    goals = pd.Series([2, 2, 2, 2])
+
+    # Act: calculate dispersion statistics.
+    result = calculate_goal_dispersion(goals)
+
+    # Assert: verify that all dispersion values are zero.
+    assert result["range"] == 0, "Unexpected range"
+    assert result["variance"] == 0
+    assert result["std_dev"] == 0
+
+def test_goal_dispersion_empty_series():
+    # Arrange: prepare an empty Series.
+    goals = pd.Series([], dtype=float)
+
+    # Act & Assert: verify that an empty Series raises ValueError.
+    with pytest.raises(ValueError):
+        calculate_goal_dispersion(goals)
+
+def test_goal_dispersion_missing_values():
+    # Arrange: prepare goal data with a missing value.
+    goals = pd.Series([1, 2, None, 4])
+
+    # Act & Assert: verify that missing values raise ValueError.
+    with pytest.raises(ValueError):
+        calculate_goal_dispersion(goals)

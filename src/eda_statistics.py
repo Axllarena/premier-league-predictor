@@ -25,3 +25,16 @@ def calculate_range_proportion(goals, lower_bound, upper_bound):
 
     # Return the proportion of True values as a float.
     return goals.mean()
+
+def calculate_goal_dispersion(goals):
+
+    if goals.empty or goals.isna().any():
+        raise ValueError("Series is empty")
+
+    goals_dispersion = {
+        "range": goals.max() - goals.min(),
+        "variance": goals.var(ddof=0),
+        "std_dev":goals.std(ddof=0)
+    }
+
+    return goals_dispersion

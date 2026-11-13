@@ -1,11 +1,9 @@
-
 import pandas as pd
 
 from src.eda_statistics import (
     calculate_goal_frequency,
     calculate_range_proportion,
 )
-
 
 # Load Premier League match data.
 df = pd.read_csv("data/raw/E0_2526.csv")
