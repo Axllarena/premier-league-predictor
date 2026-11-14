@@ -3,6 +3,7 @@ import pandas as pd
 from src.eda_statistics import (
     calculate_goal_frequency,
     calculate_range_proportion,
+    calculate_goal_dispersion
 )
 
 # Load Premier League match data.
@@ -62,6 +63,10 @@ assert round(at_most_one_frequency, 6) == round(at_most_one_home_goal, 6)
 # Verify that complementary events cover all matches.
 assert round(at_least_two_home_goals + at_most_one_home_goal, 6) == 1.0
 
+# Calculate home and away goal dispersion.
+home_dispersion = calculate_goal_dispersion(df["FTHG"])
+away_dispersion = calculate_goal_dispersion(df["FTAG"])
+
 # Display the results.
 print("Home goal frequency:")
 print(home_goal_frequency)
@@ -69,23 +74,21 @@ print(home_goal_frequency)
 print("\nHome goal relative frequency:")
 print(home_goal_relative_frequency)
 
-print(
-    "\nProportion of matches with at least two home goals:",
-    at_least_two_home_goals,
-)
-print(
-    "Proportion of matches with at most one home goal:",
-    at_most_one_home_goal,
-)
-print(
-    "Proportion of matches with 2 to 4 home goals:",
-    home_goals_in_range_proportion,
-)
-print(
-    "Proportion of matches with zero or at least four home goals:",
-    zero_or_four_plus_home_goals_proportion,
-)
-print(
-    "Proportion of matches with 1 to 3 away goals:",
-    away_goals_in_range_proportion,
-)
+print( "\nProportion of matches with at least two home goals:",at_least_two_home_goals)
+print( "Proportion of matches with at most one home goal:", at_most_one_home_goal)
+print( "Proportion of matches with 2 to 4 home goals:", home_goals_in_range_proportion)
+print("Proportion of matches with zero or at least four home goals:", zero_or_four_plus_home_goals_proportion)
+print("Proportion of matches with 1 to 3 away goals:\n", away_goals_in_range_proportion)
+
+print("\nHome goal dispersion:", home_dispersion)
+
+
+print(f"Home goal standard deviation: {home_dispersion['std_dev']:.2f}")
+print(f"home goals variance: {home_dispersion["variance"]:.2f}")
+print(f"Home cv: {home_dispersion["cv"]:.2f}%\n")
+
+print("Away goal dispersion\n", away_dispersion)
+
+print(f"Away goal standard deviation: {away_dispersion['std_dev']:.2f}")
+print(f"Away goals variance: {away_dispersion["variance"]:.2f}")
+print(f"Away cv: {away_dispersion["cv"]:.2f}%")

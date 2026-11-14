@@ -98,6 +98,7 @@ def test_goal_dispersion():
     assert result["range"] == 4, "Unexpected range"
     assert result["variance"] == pytest.approx(3.2)
     assert result["std_dev"] == pytest.approx(1.7888543819998317)
+    assert result["cv"] == pytest.approx(89.442719)
 
 def test_goal_dispersion_constant_values():
     # Arrange: prepare constant goal data.
@@ -110,6 +111,7 @@ def test_goal_dispersion_constant_values():
     assert result["range"] == 0, "Unexpected range"
     assert result["variance"] == 0
     assert result["std_dev"] == 0
+    assert result["cv"] == 0
 
 def test_goal_dispersion_empty_series():
     # Arrange: prepare an empty Series.
@@ -126,3 +128,11 @@ def test_goal_dispersion_missing_values():
     # Act & Assert: verify that missing values raise ValueError.
     with pytest.raises(ValueError):
         calculate_goal_dispersion(goals)
+
+def test_goal_dispersion_zero_mean():
+    goals = pd.Series([0, 0, 0, 0])
+
+    result = calculate_goal_dispersion(goals)
+
+    assert result["cv"] is None, "Unexpected error"
+    assert result["std_dev"] == 0
