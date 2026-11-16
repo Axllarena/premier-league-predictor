@@ -24,8 +24,12 @@ bar_width = 0.4
 
 fig, ax = plt.subplots()
 
-ax.bar(positions - (bar_width/2), home_frequency.values, width=bar_width, label="Home team")
-ax.bar(positions + (bar_width/2), away_frequency.values, width=bar_width, label="Away team")
+home_bars = ax.bar(positions - (bar_width/2), home_frequency.values, width=bar_width, label="Home team")
+away_bars = ax.bar(positions + (bar_width/2), away_frequency.values, width=bar_width, label="Away team")
+
+ax.bar_label(home_bars, padding=3)
+ax.bar_label(away_bars, padding=3)
+ax.margins(y=0.10)
 
 ax.set_xlabel("Goals scored")
 ax.set_ylabel("Number of matches")
