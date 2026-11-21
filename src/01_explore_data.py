@@ -27,3 +27,5 @@ print(outcome_percentages)
 
 print("\nMissing results:", missing_results)
 print("Invalid results (including missing):", invalid_count)
+
+print("Dataset shape (rows, columns):", df.shape)
